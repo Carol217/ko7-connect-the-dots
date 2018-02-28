@@ -21,28 +21,54 @@ var changeColor = function(){
 };
 */
 
+var prevX = null;
+var prevY = null;
+
 var clearScreen = function(e){
     pic.innerHTML = "";
+    console.log("Cleared Screen.")
+    prevX = null;
+    prevY = null;
+}
+
+var drawLine = function(x,y){
+    if (prevX != null){
+	var l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+	l.setAttribute("x1", prevX);
+	l.setAttribute("x2", x);
+	l.setAttribute("y1", prevY);
+	l.setAttribute("y2", y);
+	l.setAttribute("stroke", "black");
+	l.setAttribute("stroke-width", 2);
+	pic.appendChild(l);
+	drawDot(prevX, prevY);
+    }
+    prevX = x;
+    prevY = y;
 }
 
 var drawDot = function(x,y){
     var cl = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     cl.setAttribute("cx", x);
     cl.setAttribute("cy", y);
-    cl.setAttribute("r", "30");
+    cl.setAttribute("r", "15");
     cl.setAttribute("fill", "green");
     pic.appendChild(cl)
     return
 }
 
 var clicked = function(e){
-    console.log(e.ToElement == this); //<-- it's false?
-    if (e.ToElement == this){
+    console.log(e.target);
+    console.log(this);
+    console.log(e.target == this);
+    if (e.target == this){  //<-- toElement is undefined
+	console.log("coords: ", e.offsetX, ", ", e.offsetY);
+	drawLine(e.offsetX, e.offsetY);
 	drawDot(e.offsetX,e.offsetY);
-    }
+    };
 }
 
 clear.addEventListener("click", clearScreen)
 pic.addEventListener("click", clicked)
 
-drawDot(100,200)
+//drawDot(100,200)
